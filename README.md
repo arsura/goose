@@ -17,9 +17,9 @@ This implementation is based on the following discussions and contributions:
 [![Goose
 CI](https://github.com/pressly/goose/actions/workflows/ci.yaml/badge.svg)](https://github.com/pressly/goose/actions/workflows/ci.yaml)
 [![Go
-Reference](https://pkg.go.dev/badge/github.com/pressly/goose/v3.svg)](https://pkg.go.dev/github.com/pressly/goose/v3)
+Reference](https://pkg.go.dev/badge/github.com/arsura/goose.svg)](https://pkg.go.dev/github.com/arsura/goose)
 [![Go Report
-Card](https://goreportcard.com/badge/github.com/pressly/goose/v3)](https://goreportcard.com/report/github.com/pressly/goose/v3)
+Card](https://goreportcard.com/badge/github.com/arsura/goose)](https://goreportcard.com/report/github.com/arsura/goose)
 
 Goose is a database migration tool. Both a CLI and a library.
 
@@ -40,7 +40,7 @@ Manage your **database schema** by creating incremental SQL changes or Go functi
 # Install
 
 ```shell
-go install github.com/pressly/goose/v3/cmd/goose@latest
+go install github.com/arsura/goose/cmd/goose@latest
 ```
 
 This will install the `goose` binary to your `$GOPATH/bin` directory.
@@ -406,7 +406,7 @@ import (
     "database/sql"
     "embed"
 
-    "github.com/pressly/goose/v3"
+    "github.com/arsura/goose"
 )
 
 //go:embed migrations/*.sql
@@ -449,7 +449,7 @@ package migrations
 import (
 	"database/sql"
 
-	"github.com/pressly/goose/v3"
+	"github.com/arsura/goose"
 )
 
 func init() {

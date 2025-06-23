@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pressly/goose/v3/database"
-	"github.com/pressly/goose/v3/internal/testing/testdb"
+	"github.com/arsura/goose/database"
+	"github.com/arsura/goose/internal/testing/testdb"
 	"github.com/stretchr/testify/require"
 )
 

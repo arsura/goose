@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pressly/goose/v3/database/dialect"
+	"github.com/arsura/goose/database/dialect"
 )
 
 const (
