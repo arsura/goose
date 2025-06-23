@@ -1,3 +1,27 @@
+# Fork Notice: Enhanced ClickHouse Cluster Support
+
+This is a fork of [pressly/goose](https://github.com/pressly/goose) that adds enhanced ClickHouse cluster configuration support. This enhancement was developed to address immediate product requirements for better ClickHouse cluster integration.
+
+While this implementation provides an easy-to-use solution for ClickHouse clusters, I recognize that it may not align with the main repository's code structure and design principles. I hope that the upstream maintainers will consider adding official ClickHouse cluster support in the future.
+
+## Implementation References
+
+This implementation draws from the following community discussions and contributions:
+- [ClickHouse cluster support discussion](https://github.com/pressly/goose/issues/869#issuecomment-2841702828)
+- [GitLab Opstrace merge request](https://gitlab.com/gitlab-org/opstrace/goose/-/merge_requests/1)
+
+## Related Issues & Pull Requests
+
+The following issues and pull requests in the upstream repository are related to ClickHouse cluster support:
+- [Issue #869: ClickHouse cluster support](https://github.com/pressly/goose/issues/869)
+- [Pull Request #809](https://github.com/pressly/goose/pull/809)
+- [Pull Request #530](https://github.com/pressly/goose/pull/530)
+- [Pull Request #520](https://github.com/pressly/goose/pull/520)
+
+As of now, there appears to be no clear consensus or direction on how to implement this feature in the main repository. 
+
+---
+
 # goose
 
 <img align="right" width="125" src="assets/goose_logo.png">
