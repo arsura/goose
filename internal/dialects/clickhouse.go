@@ -69,8 +69,9 @@ func (c *clickhouse) getTableEngine() string {
 
 func (c *clickhouse) InsertVersion(tableName string) string {
 	if c.cluster != "" {
-		q := `INSERT INTO %s (version_id, is_applied) VALUES ($1, $2)
-		SETTINGS insert_quorum=%s, insert_quorum_parallel=0, select_sequential_consistency=1`
+		q := `INSERT INTO %s (version_id, is_applied) 
+		SETTINGS insert_quorum=%s, insert_quorum_parallel=0, select_sequential_consistency=1
+		VALUES ($1, $2)`
 		return fmt.Sprintf(q, tableName, c.insertQuorum)
 	}
 	return fmt.Sprintf("INSERT INTO %s (version_id, is_applied) VALUES ($1, $2)", tableName)
