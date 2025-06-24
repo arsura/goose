@@ -15,22 +15,30 @@ const (
 // NewClickhouse returns a new [dialect.Querier] for Clickhouse dialect.
 func NewClickhouse() dialect.Querier {
 	var (
-		isCluster    = os.Getenv("CLICKHOUSE_IS_CLUSTER") == "true"
-		clusterName  = os.Getenv("CLICKHOUSE_CLUSTER")
-		zooPath      = os.Getenv("CLICKHOUSE_ZOOKEEPER_PATH")
-		replica      = os.Getenv("CLICKHOUSE_REPLICA_NAME")
+		cluster      = os.Getenv("CLICKHOUSE_CLUSTER")
+		zooPath      = os.Getenv("CLICKHOUSE_REPLICATED_MERGE_TREE_ZOOKEEPER_PATH")
+		replica      = os.Getenv("CLICKHOUSE_REPLICATED_MERGE_TREE_REPLICA_NAME")
+		customEngine = os.Getenv("CLICKHOUSE_CUSTOM_ENGINE")
 		insertQuorum = os.Getenv("CLICKHOUSE_INSERT_QUORUM")
 	)
 
-	if isCluster && clusterName == "" {
-		fmt.Println("CLICKHOUSE_CLUSTER is not set, using single node mode")
-		isCluster = false
+	isCluster := false
+	if cluster != "" {
+		isCluster = true
+
+		if insertQuorum == "" {
+			insertQuorum = "auto"
+		}
 	}
 
-	if insertQuorum == "" {
-		insertQuorum = "auto"
+	return &clickhouse{
+		isCluster:    isCluster,
+		cluster:      cluster,
+		zooPath:      zooPath,
+		replica:      replica,
+		customEngine: customEngine,
+		insertQuorum: insertQuorum,
 	}
-	return &clickhouse{isCluster: isCluster, cluster: clusterName, zooPath: zooPath, replica: replica, insertQuorum: insertQuorum}
 }
 
 type clickhouse struct {
@@ -38,6 +46,7 @@ type clickhouse struct {
 	cluster      string
 	zooPath      string
 	replica      string
+	customEngine string
 	insertQuorum string
 }
 
@@ -67,6 +76,10 @@ func (c *clickhouse) getClusterCommand(baseCommand string) string {
 
 func (c *clickhouse) getTableEngine() string {
 	if c.isCluster {
+		if c.customEngine != "" {
+			return c.customEngine
+		}
+
 		if c.zooPath != "" && c.replica != "" {
 			return fmt.Sprintf("ReplicatedMergeTree('%s', '%s')", c.zooPath, c.replica)
 		}
