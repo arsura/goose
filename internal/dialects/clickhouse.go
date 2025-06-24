@@ -15,18 +15,26 @@ const (
 // NewClickhouse returns a new [dialect.Querier] for Clickhouse dialect.
 func NewClickhouse() dialect.Querier {
 	var (
-		cluster      = os.Getenv("CLICKHOUSE_CLUSTER")
+		isCluster    = os.Getenv("CLICKHOUSE_IS_CLUSTER") == "true"
+		clusterName  = os.Getenv("CLICKHOUSE_CLUSTER")
 		zooPath      = os.Getenv("CLICKHOUSE_ZOOKEEPER_PATH")
 		replica      = os.Getenv("CLICKHOUSE_REPLICA_NAME")
 		insertQuorum = os.Getenv("CLICKHOUSE_INSERT_QUORUM")
 	)
+
+	if isCluster && clusterName == "" {
+		fmt.Println("CLICKHOUSE_CLUSTER is not set, using single node mode")
+		isCluster = false
+	}
+
 	if insertQuorum == "" {
 		insertQuorum = "auto"
 	}
-	return &clickhouse{cluster: cluster, zooPath: zooPath, replica: replica, insertQuorum: insertQuorum}
+	return &clickhouse{isCluster: isCluster, cluster: clusterName, zooPath: zooPath, replica: replica, insertQuorum: insertQuorum}
 }
 
 type clickhouse struct {
+	isCluster    bool
 	cluster      string
 	zooPath      string
 	replica      string
@@ -51,14 +59,14 @@ func (c *clickhouse) CreateTable(tableName string) string {
 }
 
 func (c *clickhouse) getClusterCommand(baseCommand string) string {
-	if c.cluster != "" {
+	if c.isCluster {
 		return fmt.Sprintf("%s ON CLUSTER %s", baseCommand, c.cluster)
 	}
 	return baseCommand
 }
 
 func (c *clickhouse) getTableEngine() string {
-	if c.cluster != "" {
+	if c.isCluster {
 		if c.zooPath != "" && c.replica != "" {
 			return fmt.Sprintf("ReplicatedMergeTree('%s', '%s')", c.zooPath, c.replica)
 		}
@@ -68,9 +76,9 @@ func (c *clickhouse) getTableEngine() string {
 }
 
 func (c *clickhouse) InsertVersion(tableName string) string {
-	if c.cluster != "" {
+	if c.isCluster {
 		q := `INSERT INTO %s (version_id, is_applied) 
-		SETTINGS insert_quorum=%s, insert_quorum_parallel=0, select_sequential_consistency=1
+		SETTINGS insert_quorum=%s, insert_quorum_parallel=0
 		VALUES ($1, $2)`
 		return fmt.Sprintf(q, tableName, c.insertQuorum)
 	}
@@ -84,16 +92,28 @@ func (c *clickhouse) DeleteVersion(tableName string) string {
 }
 
 func (c *clickhouse) GetMigrationByVersion(tableName string) string {
+	if c.isCluster {
+		q := `SELECT tstamp, is_applied FROM %s WHERE version_id = $1 ORDER BY tstamp DESC LIMIT 1 SETTINGS select_sequential_consistency=1`
+		return fmt.Sprintf(q, tableName)
+	}
 	q := `SELECT tstamp, is_applied FROM %s WHERE version_id = $1 ORDER BY tstamp DESC LIMIT 1`
 	return fmt.Sprintf(q, tableName)
 }
 
 func (c *clickhouse) ListMigrations(tableName string) string {
+	if c.isCluster {
+		q := `SELECT version_id, is_applied FROM %s ORDER BY version_id DESC SETTINGS select_sequential_consistency=1`
+		return fmt.Sprintf(q, tableName)
+	}
 	q := `SELECT version_id, is_applied FROM %s ORDER BY version_id DESC`
 	return fmt.Sprintf(q, tableName)
 }
 
 func (c *clickhouse) GetLatestVersion(tableName string) string {
+	if c.isCluster {
+		q := `SELECT max(version_id) FROM %s SETTINGS select_sequential_consistency=1`
+		return fmt.Sprintf(q, tableName)
+	}
 	q := `SELECT max(version_id) FROM %s`
 	return fmt.Sprintf(q, tableName)
 }
