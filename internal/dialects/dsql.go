@@ -3,7 +3,7 @@ package dialects
 import (
 	"fmt"
 
-	"github.com/pressly/goose/v3/database/dialect"
+	"github.com/arsura/goose/database/dialect"
 )
 
 // NewAuroraDSQL returns a new [dialect.Querier] for Aurora DSQL dialect.

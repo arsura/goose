@@ -1,6 +1,6 @@
 package dialects
 
-import "github.com/pressly/goose/v3/database/dialect"
+import "github.com/arsura/goose/database/dialect"
 
 // NewTurso returns a [dialect.Querier] for Turso dialect.
 func NewTurso() dialect.Querier {

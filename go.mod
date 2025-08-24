@@ -1,4 +1,4 @@
-module github.com/pressly/goose/v3
+module github.com/arsura/goose
 
 go 1.23.0
 

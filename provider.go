@@ -11,10 +11,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/pressly/goose/v3/database"
-	"github.com/pressly/goose/v3/internal/controller"
-	"github.com/pressly/goose/v3/internal/gooseutil"
-	"github.com/pressly/goose/v3/internal/sqlparser"
+	"github.com/arsura/goose/database"
+	"github.com/arsura/goose/internal/controller"
+	"github.com/arsura/goose/internal/gooseutil"
+	"github.com/arsura/goose/internal/sqlparser"
 	"go.uber.org/multierr"
 )
 

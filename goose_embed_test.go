@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/pressly/goose/v3"
+	"github.com/arsura/goose"
 	"github.com/stretchr/testify/require"
 	_ "modernc.org/sqlite"
 )

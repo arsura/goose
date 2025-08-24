@@ -17,10 +17,10 @@ import (
 	"text/tabwriter"
 	"text/template"
 
+	"github.com/arsura/goose"
+	"github.com/arsura/goose/internal/migrationstats"
 	"github.com/joho/godotenv"
 	"github.com/mfridman/xflag"
-	"github.com/pressly/goose/v3"
-	"github.com/pressly/goose/v3/internal/migrationstats"
 )
 
 var (
